@@ -1,6 +1,8 @@
 import sqlite3
 import json
 from datetime import datetime
+from models import User
+
 
 def login_user(user):
     """Checks for the user in the database
@@ -69,3 +71,55 @@ def create_user(user):
             'token': id,
             'valid': True
         })
+
+
+def get_all_users():
+    """Gets all users from the database
+
+    Returns:
+        json string: Contains a list of all users in the database
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+
+        # magic that allows us to access the columns by name instead of index
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # SQL query to get all users
+        db_cursor.execute("""
+        SELECT 
+            u.id, 
+            u.first_name, 
+            u.last_name, u.email, 
+            u.bio, 
+            u.username, 
+            u.password, 
+            u.profile_image_url, 
+            u.created_on, 
+            u.active
+        FROM Users u
+        """)
+
+        # Create an empty list to hold all users
+        users = []
+        # Fetch all rows from the executed query and store them in the dataset variable
+        dataset = db_cursor.fetchall()
+
+        # Loop through the dataset and create User objects
+        for row in dataset:
+            user = User(
+                row['id'],
+                row['first_name'],
+                row['last_name'],
+                row['email'],
+                row['bio'],
+                row['username'],
+                row['password'],
+                row['profile_image_url'],
+                row['created_on'],
+                row['active']
+            )
+            # Append the user object to the list
+            users.append(user.__dict__)
+
+    return users
