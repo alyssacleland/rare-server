@@ -54,15 +54,18 @@ def create_user(user):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        Insert into Users (first_name, last_name, username, email, password, bio, created_on, active) values (?, ?, ?, ?, ?, ?, ?, 1)
+        Insert into Users (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active) values (?, ?, ?, ?, ?, ?, ?, ?, 1)
         """, (
             user['first_name'],
             user['last_name'],
-            user['username'],
             user['email'],
-            user['password'],
             user['bio'],
-            datetime.now()
+            user['username'],
+            user['password'],
+            user['profile_image_url'],
+            # created_on is set to the current date and time
+            datetime.now(),
+            # active is set to 1 (true)
         ))
 
         id = db_cursor.lastrowid
@@ -165,7 +168,7 @@ def update_user(id, new_user):
         return True
 
 
-def delete_user(user_id):
+def delete_user(id):
     """Deletes a user from the database
 
     Args:
@@ -181,13 +184,8 @@ def delete_user(user_id):
         db_cursor.execute("""
         Delete from Users 
         Where id = ?
-        """, (user_id,))
-
-        return json.dumps({
-            'token': user_id,
-            'valid': True
-        })
+        """, (id,))
 
 
-def get_user_by_id(user_id):
+def get_user_by_id(id):
     pass
