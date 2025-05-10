@@ -1,9 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from views import get_all_users, update_user, delete_user
+from views import create_post, get_all_posts, update_post, delete_post
 
 
-from views.user_requests import create_user, login_user
+from views import create_user, login_user
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -61,6 +62,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "users":
             response = get_all_users()
             # turn dict into json string to send
+        
+        if resource == "posts":
+            posts = get_all_posts()
+            response = [post.__dict__ for post in posts]
 
         self.wfile.write(json.dumps(response).encode())
 
@@ -76,12 +81,38 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == "posts":
+            create_post(
+                user_id=post_body['user_id'],
+                category_id=post_body['category_id'],
+                title=post_body['title'],
+                publication_date=post_body['publication_date'],
+                image_url=post_body['image_url'],
+                content=post_body['content'],
+                approved=post_body['approved']
+            )
+            response = json.dumps({"message": "Post created"})
 
         self.wfile.write(response.encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
-        pass
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = json.loads(self.rfile.read(content_len))
+        resource, id = self.parse_url()
+
+        if resource == "posts":
+            update_post(
+                post_id=id,
+                user_id=post_body['user_id'],
+                category_id=post_body['category_id'],
+                title=post_body['title'],
+                publication_date=post_body['publication_date'],
+                image_url=post_body['image_url'],
+                content=post_body['content'],
+                approved=post_body['approved']
+            )
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
@@ -94,6 +125,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "users":
             delete_user(id)
+        elif resource == "posts":
+            delete_post(id)
 
 
 def main():
