@@ -97,6 +97,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
+
         self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
@@ -114,19 +115,33 @@ class HandleRequests(BaseHTTPRequestHandler):
                 approved=post_body['approved']
             )
 
+        if resource == "users":
+            # will return either True or False from `update_animal`
+            success = update_user(id, post_body)
+
+        # handle the value of success
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+
     def do_DELETE(self):
         """Handle DELETE Requests"""
         #  Set a 204 response code
         self._set_headers(204)
 
         # Parse the URL
-        (resource, id) = self.parse_url(self.path)
+        (resource, id) = self.parse_url()
 
-        # Delete a single animal from the list
+        # Delete a single user from the list
         if resource == "users":
             delete_user(id)
         elif resource == "posts":
             delete_post(id)
+
+        # Encode the new user and send in response
+        self.wfile.write("".encode())
 
 
 def main():

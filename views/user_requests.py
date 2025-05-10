@@ -125,7 +125,7 @@ def get_all_users():
     return users
 
 
-def update_user(user):
+def update_user(id, new_user):
     """Updates a user in the database
     Args:
         user (dict): The dictionary passed to the update user post request
@@ -141,20 +141,28 @@ def update_user(user):
         Set first_name = ?, last_name = ?, username = ?, email = ?, password = ?, bio = ?, profile_image_url = ?
         Where id = ?
         """, (
-            user['first_name'],
-            user['last_name'],
-            user['username'],
-            user['email'],
-            user['password'],
-            user['bio'],
-            user['profile_image_url'],
-            user['id']
+            new_user['first_name'],
+            new_user['last_name'],
+            new_user['username'],
+            new_user['email'],
+            new_user['password'],
+            new_user['bio'],
+            new_user['profile_image_url'],
+            id,
         ))
 
-        return json.dumps({
-            'token': user['id'],
-            'valid': True
-        })
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    # return value of this function
+    # if no rows were affected (id didn't exist)...
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
 
 
 def delete_user(user_id):
