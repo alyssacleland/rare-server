@@ -2,9 +2,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from views import get_all_users, update_user, delete_user
 from views import create_post, get_all_posts, update_post, delete_post
-
-
+from views import create_category
 from views import create_user, login_user
+
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -81,6 +81,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+
+        if resource == 'categories':
+            response = create_category(post_body)
+
         if resource == "posts":
             create_post(
                 user_id=post_body['user_id'],
@@ -92,6 +96,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 approved=post_body['approved']
             )
             response = json.dumps({"message": "Post created"})
+
 
         self.wfile.write(response.encode())
 

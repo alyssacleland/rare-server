@@ -15,19 +15,18 @@ CREATE TABLE "DemotionQueue" (
   "action" varchar,
   "admin_id" INTEGER,
   "approver_one_id" INTEGER,
-  FOREIGN KEY(`admin_id`) REFERENCES `Users`(`id`),
-  FOREIGN KEY(`approver_one_id`) REFERENCES `Users`(`id`),
-  PRIMARY KEY (action, admin_id, approver_one_id)
+  FOREIGN KEY("admin_id") REFERENCES "Users"("id"),
+  FOREIGN KEY("approver_one_id") REFERENCES "Users"("id"),
+  PRIMARY KEY ("action", "admin_id", "approver_one_id")
 );
-
 
 CREATE TABLE "Subscriptions" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "follower_id" INTEGER,
   "author_id" INTEGER,
   "created_on" date,
-  FOREIGN KEY(`follower_id`) REFERENCES `Users`(`id`),
-  FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
+  FOREIGN KEY("follower_id") REFERENCES "Users"("id"),
+  FOREIGN KEY("author_id") REFERENCES "Users"("id")
 );
 
 CREATE TABLE "Posts" (
@@ -39,7 +38,8 @@ CREATE TABLE "Posts" (
   "image_url" varchar,
   "content" varchar,
   "approved" bit,
-  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
+
+  FOREIGN KEY("user_id") REFERENCES "Users"("id")
 );
 
 CREATE TABLE "Comments" (
@@ -47,8 +47,8 @@ CREATE TABLE "Comments" (
   "post_id" INTEGER,
   "author_id" INTEGER,
   "content" varchar,
-  FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`),
-  FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
+  FOREIGN KEY("post_id") REFERENCES "Posts"("id"),
+  FOREIGN KEY("author_id") REFERENCES "Users"("id")
 );
 
 CREATE TABLE "Reactions" (
@@ -62,9 +62,9 @@ CREATE TABLE "PostReactions" (
   "user_id" INTEGER,
   "reaction_id" INTEGER,
   "post_id" INTEGER,
-  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`),
-  FOREIGN KEY(`reaction_id`) REFERENCES `Reactions`(`id`),
-  FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`)
+  FOREIGN KEY("user_id") REFERENCES "Users"("id"),
+  FOREIGN KEY("reaction_id") REFERENCES "Reactions"("id"),
+  FOREIGN KEY("post_id") REFERENCES "Posts"("id")
 );
 
 CREATE TABLE "Tags" (
@@ -76,8 +76,8 @@ CREATE TABLE "PostTags" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "post_id" INTEGER,
   "tag_id" INTEGER,
-  FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`),
-  FOREIGN KEY(`tag_id`) REFERENCES `Tags`(`id`)
+  FOREIGN KEY("post_id") REFERENCES "Posts"("id"),
+  FOREIGN KEY("tag_id") REFERENCES "Tags"("id")
 );
 
 CREATE TABLE "Categories" (
@@ -99,3 +99,4 @@ INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'passw
 ('Maria', 'Gomez', 'maria.gomez@example.com', 'Maria is a backend engineer who enjoys building scalable systems and mentoring junior developers.', 'mariagomez', 'securepass', 'https://example.com/maria.jpg', '2023-10-08', 1),
 ('Chen', 'Wei', 'chen.wei@example.com', 'Chen is a DevOps engineer focused on cloud infrastructure and CI/CD pipelines.', 'chenwei', 'cloudyday', 'https://example.com/chen.jpg', '2023-10-10', 1),
 ('Amara', 'Jones', 'amara.jones@example.com', 'Amara is a data scientist who bridges the gap between data and business insights.', 'amaraj', 'datasmart', 'https://example.com/amara.jpg', '2023-10-12', 0);
+
