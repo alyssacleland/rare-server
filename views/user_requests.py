@@ -123,3 +123,63 @@ def get_all_users():
             users.append(user.__dict__)
 
     return users
+
+
+def update_user(user):
+    """Updates a user in the database
+    Args:
+        user (dict): The dictionary passed to the update user post request
+    Returns:
+        json string: Contains the token of the updated user
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        Update Users 
+        Set first_name = ?, last_name = ?, username = ?, email = ?, password = ?, bio = ?, profile_image_url = ?
+        Where id = ?
+        """, (
+            user['first_name'],
+            user['last_name'],
+            user['username'],
+            user['email'],
+            user['password'],
+            user['bio'],
+            user['profile_image_url'],
+            user['id']
+        ))
+
+        return json.dumps({
+            'token': user['id'],
+            'valid': True
+        })
+
+
+def delete_user(user_id):
+    """Deletes a user from the database
+
+    Args:
+        user_id (int): The id of the user to delete
+
+    Returns:
+        json string: Contains the token of the deleted user
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        Delete from Users 
+        Where id = ?
+        """, (user_id,))
+
+        return json.dumps({
+            'token': user_id,
+            'valid': True
+        })
+
+
+def get_user_by_id(user_id):
+    pass

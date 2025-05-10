@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from views import get_all_users
+from views import get_all_users, update_user, delete_user
+
 
 from views.user_requests import create_user, login_user
 
@@ -84,7 +85,15 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
-        pass
+        #  Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "users":
+            delete_user(id)
 
 
 def main():
