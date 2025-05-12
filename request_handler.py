@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from views import get_all_users, update_user, delete_user
 from views import create_post, get_all_posts, update_post, delete_post
-from views import create_category
+from views import get_all_categories, create_category, update_category, delete_category
 from views import create_user, login_user
 
 
@@ -62,7 +62,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "users":
             response = get_all_users()
             # turn dict into json string to send
-        
+        if resource == "categories":
+            response = get_all_categories()
+
         if resource == "posts":
             posts = get_all_posts()
             response = [post.__dict__ for post in posts]
@@ -108,6 +110,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(self.rfile.read(content_len))
         resource, id = self.parse_url()
 
+        if resource == "categories":
+            success = update_category(id, post_body)
+
         if resource == "posts":
             update_post(
                 post_id=id,
@@ -144,6 +149,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_user(id)
         elif resource == "posts":
             delete_post(id)
+        if resource == "categories":
+            delete_category(id)
 
         # Encode the new user and send in response
         self.wfile.write("".encode())
