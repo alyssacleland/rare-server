@@ -37,6 +37,6 @@ def update_post(post_id, user_id, category_id, title, publication_date, image_ur
 def delete_post(post_id): 
     with sqlite3.connect('./db.sqlite3') as conn:
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM Posts WHERE id = ?', (post_id,))
-        conn.commit()   
+        cursor.execute("""DELETE FROM Posts WHERE id = ?""", (post_id,))
+        conn.commit()
 

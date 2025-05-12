@@ -120,7 +120,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(204)
 
         # Parse the URL
-        (resource, id) = self.parse_url(self.path)
+        (resource, id) = self.parse_url()
 
         # Delete a single animal from the list
         if resource == "users":
