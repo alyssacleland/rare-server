@@ -54,7 +54,7 @@ def create_category(new_category):
         db_cursor = conn.cursor()
 
         db_cursor.execute( """
-        INSERT INTO Category
+        INSERT INTO Categories
             (label)
         VALUES
             (?);
@@ -74,7 +74,7 @@ def update_category(id, new_category):
 
 
         db_cursor.execute("""
-            UPDATE Category
+            UPDATE Categories
             SET
                 label = ?
             WHERE id = ?
@@ -90,10 +90,10 @@ def update_category(id, new_category):
 
 # DELETE
 def delete_category(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        DELETE FROM Category
+        DELETE FROM Categories
         WHERE id = ?
         """, (id, ))
